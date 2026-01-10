@@ -2,7 +2,7 @@
 const CONFIG = {
     userId: 'user01',
     userName: 'あなたの名前',
-    gasUrl: '', // Google Apps ScriptのURLを後で設定
+    gasUrl: 'https://script.google.com/macros/s/AKfycbx8ZwzQRijd3FIp8LVNdmZh5Y-zisgfRtiKNRZBHY7Xhi0Xl1AtLTxeQDv6Fmf6ySs/exec',
     lineToken: 'YOZ7UftinQaO3OyBDaloYu4cXzhYtLzmqBzAGNvCIJRg7h+DoqsX0n6OXdfOFZ9vI7/+VIOKgdWLHJ6yBmeAi6kPqz4+FZ3vpHQTBEAQSHA81c9tQLH/8oP8UUyRpnHxvmJ0QlaAjZWiraJeO38tBgdB04t89/1O/w1cDnyilFU=',
     groupId: 'C5a5b36e27a78ed6cfbb74839a8a9d04e'
 };
