@@ -1,7 +1,7 @@
 // 設定
 const CONFIG = {
     userId: 'user01',
-    userName: 'あなたの名前',
+    userName: localStorage.getItem('userName') || 'あなたの名前',
     gasUrl: 'https://script.google.com/macros/s/AKfycbx8ZwzQRijd3FIp8LVNdmZh5Y-zisgfRtiKNRZBHY7Xhi0Xl1AtLTxeQDv6Fmf6ySs/exec',
     lineToken: 'YOZ7UftinQaO3OyBDaloYu4cXzhYtLzmqBzAGNvCIJRg7h+DoqsX0n6OXdfOFZ9vI7/+VIOKgdWLHJ6yBmeAi6kPqz4+FZ3vpHQTBEAQSHA81c9tQLH/8oP8UUyRpnHxvmJ0QlaAjZWiraJeO38tBgdB04t89/1O/w1cDnyilFU=',
     groupId: 'C5a5b36e27a78ed6cfbb74839a8a9d04e'
@@ -15,7 +15,12 @@ const elements = {
     clockInBtn: document.getElementById('clockInBtn'),
     clockOutBtn: document.getElementById('clockOutBtn'),
     recordContent: document.getElementById('recordContent'),
-    toast: document.getElementById('toast')
+    toast: document.getElementById('toast'),
+    settingsBtn: document.getElementById('settingsBtn'),
+    settingsModal: document.getElementById('settingsModal'),
+    closeModal: document.getElementById('closeModal'),
+    userNameInput: document.getElementById('userNameInput'),
+    saveSettings: document.getElementById('saveSettings')
 };
 
 // 状態管理
@@ -27,6 +32,11 @@ let currentState = {
 
 // 初期化
 function init() {
+    // 初回起動時は設定モーダルを表示
+    if (!localStorage.getItem('userName')) {
+        showSettingsModal();
+    }
+
     elements.userName.textContent = CONFIG.userName;
     updateClock();
     setInterval(updateClock, 1000);
@@ -59,6 +69,18 @@ function updateClock() {
 function setupEventListeners() {
     elements.clockInBtn.addEventListener('click', handleClockIn);
     elements.clockOutBtn.addEventListener('click', handleClockOut);
+
+    // 設定モーダル
+    elements.settingsBtn.addEventListener('click', showSettingsModal);
+    elements.closeModal.addEventListener('click', hideSettingsModal);
+    elements.saveSettings.addEventListener('click', saveUserSettings);
+
+    // モーダル外クリックで閉じる
+    elements.settingsModal.addEventListener('click', (e) => {
+        if (e.target === elements.settingsModal) {
+            hideSettingsModal();
+        }
+    });
 }
 
 // 出勤処理
@@ -330,6 +352,44 @@ function showToast(message, type = 'success') {
     setTimeout(() => {
         elements.toast.classList.remove('show');
     }, 3000);
+}
+
+// 設定モーダルを表示
+function showSettingsModal() {
+    elements.userNameInput.value = CONFIG.userName === 'あなたの名前' ? '' : CONFIG.userName;
+    elements.settingsModal.classList.add('show');
+}
+
+// 設定モーダルを非表示
+function hideSettingsModal() {
+    // 初回起動時は名前が設定されるまで閉じられない
+    if (!localStorage.getItem('userName')) {
+        showToast('お名前を入力してください', 'error');
+        return;
+    }
+    elements.settingsModal.classList.remove('show');
+}
+
+// ユーザー設定を保存
+function saveUserSettings() {
+    const userName = elements.userNameInput.value.trim();
+
+    if (!userName) {
+        showToast('お名前を入力してください', 'error');
+        return;
+    }
+
+    // LocalStorageに保存
+    localStorage.setItem('userName', userName);
+    CONFIG.userName = userName;
+
+    // UIを更新
+    elements.userName.textContent = userName;
+
+    // モーダルを閉じる
+    elements.settingsModal.classList.remove('show');
+
+    showToast('設定を保存しました');
 }
 
 // アプリ起動
