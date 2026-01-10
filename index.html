@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#4F46E5">
+    <title>出退勤管理アプリ</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <header class="app-header">
+            <h1 class="app-title">出退勤管理</h1>
+            <div class="current-time" id="currentTime"></div>
+        </header>
+
+        <main class="main-content">
+            <div class="user-info">
+                <div class="user-avatar">👤</div>
+                <div class="user-details">
+                    <div class="user-name" id="userName">あなたの名前</div>
+                    <div class="user-id">user01</div>
+                </div>
+            </div>
+
+            <div class="status-card" id="statusCard">
+                <div class="status-icon">⏰</div>
+                <div class="status-text">出勤前</div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="clockInBtn">
+                    <span class="btn-icon">🌅</span>
+                    <span class="btn-text">出勤</span>
+                </button>
+
+                <button class="btn btn-secondary" id="clockOutBtn" disabled>
+                    <span class="btn-icon">🌙</span>
+                    <span class="btn-text">退勤</span>
+                </button>
+            </div>
+
+            <div class="today-record" id="todayRecord">
+                <h2 class="record-title">本日の記録</h2>
+                <div class="record-content" id="recordContent">
+                    <p class="no-record">まだ記録がありません</p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="app-footer">
+            <p>&copy; 2026 出退勤管理アプリ</p>
+        </footer>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>
