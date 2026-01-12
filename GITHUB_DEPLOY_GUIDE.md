@@ -92,14 +92,13 @@ git branch -M main
 
 ```powershell
 # GitHubのリポジトリをリモートとして追加
-git remote add origin https://github.com/YOUR_USERNAME/attendance-app.git
-```
+
 
 **⚠️ 重要**: `YOUR_USERNAME`を**あなたのGitHubユーザー名**に置き換えてください！
 
 例:
 ```powershell
-git remote add origin https://github.com/takuya-motoyama/attendance-app.git
+git remote add origin https://github.com/takuya-motoyamあ/attendance-app.git
 ```
 
 **説明**:

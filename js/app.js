@@ -20,7 +20,8 @@ const elements = {
     settingsModal: document.getElementById('settingsModal'),
     closeModal: document.getElementById('closeModal'),
     userNameInput: document.getElementById('userNameInput'),
-    saveSettings: document.getElementById('saveSettings')
+    saveSettings: document.getElementById('saveSettings'),
+    completionBtn: document.getElementById('completionBtn')
 };
 
 // 状態管理
@@ -74,6 +75,9 @@ function setupEventListeners() {
     elements.settingsBtn.addEventListener('click', showSettingsModal);
     elements.closeModal.addEventListener('click', hideSettingsModal);
     elements.saveSettings.addEventListener('click', saveUserSettings);
+
+    // 課題完了ボタン
+    elements.completionBtn.addEventListener('click', handleCompletion);
 
     // モーダル外クリックで閉じる
     elements.settingsModal.addEventListener('click', (e) => {
@@ -390,6 +394,36 @@ function saveUserSettings() {
     elements.settingsModal.classList.remove('show');
 
     showToast('設定を保存しました');
+}
+
+// 課題完了報告処理
+async function handleCompletion() {
+    try {
+        elements.completionBtn.disabled = true;
+
+        const now = new Date();
+        const completionData = {
+            type: 'completion',
+            completedAt: now.toLocaleString('ja-JP'),
+            userId: CONFIG.userId,
+            userName: CONFIG.userName,
+            appUrl: window.location.href
+        };
+
+        // GASに送信
+        if (CONFIG.gasUrl) {
+            await sendToGAS(completionData);
+            showToast('🎉 課題完了報告を送信しました！', 'success');
+        } else {
+            showToast('GAS URLが設定されていません', 'error');
+        }
+
+    } catch (error) {
+        console.error('課題完了エラー:', error);
+        showToast('送信に失敗しました', 'error');
+    } finally {
+        elements.completionBtn.disabled = false;
+    }
 }
 
 // アプリ起動

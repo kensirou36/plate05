@@ -17,11 +17,16 @@ function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);
     
-    // スプレッドシートに記録
-    recordAttendance(data);
-    
-    // LINE通知送信
-    sendLineNotification(data);
+    // データタイプに応じて処理を分岐
+    if (data.type === 'completion') {
+      // 課題完了報告
+      recordCompletion(data);
+      sendCompletionNotification(data);
+    } else {
+      // 出退勤記録
+      recordAttendance(data);
+      sendLineNotification(data);
+    }
     
     return ContentService.createTextOutput(JSON.stringify({
       status: 'success',
@@ -114,6 +119,55 @@ function sendLineNotification(data) {
     Logger.log('LINE通知送信成功');
   } catch (error) {
     Logger.log('LINE通知エラー: ' + error);
+  }
+}
+
+// 課題完了記録
+function recordCompletion(data) {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = ss.getSheetByName('課題完了記録');
+  
+  if (!sheet) {
+    throw new Error('課題完了記録シートが見つかりません');
+  }
+  
+  // 新しい記録を追加
+  sheet.appendRow([
+    data.completedAt,
+    data.userId,
+    data.userName,
+    data.appUrl,
+    '確認待ち'
+  ]);
+}
+
+// 課題完了通知送信
+function sendCompletionNotification(data) {
+  const message = `【🎉課題完了報告🎉】\n研修生：${data.userName}（${data.userId}）\n完了：${data.completedAt}\n\nアプリURL:\n${data.appUrl}\n\n確認をお願いします！`;
+  
+  const url = 'https://api.line.me/v2/bot/message/push';
+  const payload = {
+    to: GROUP_ID,
+    messages: [{
+      type: 'text',
+      text: message
+    }]
+  };
+  
+  const options = {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + LINE_TOKEN
+    },
+    payload: JSON.stringify(payload)
+  };
+  
+  try {
+    UrlFetchApp.fetch(url, options);
+    Logger.log('課題完了通知送信成功');
+  } catch (error) {
+    Logger.log('課題完了通知エラー: ' + error);
   }
 }
 
