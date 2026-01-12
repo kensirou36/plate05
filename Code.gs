@@ -86,14 +86,23 @@ function recordAttendance(data) {
 
 // LINE通知送信
 function sendLineNotification(data) {
+  // dataが存在しない、またはclockOutTimeプロパティがない場合の安全なチェック
+  if (!data) {
+    Logger.log('LINE通知: データが空です');
+    return;
+  }
+  
   let message = '';
   
   if (data.clockOutTime) {
     // 退勤通知
     message = `【退勤】\n${data.userName}\n出勤：${data.clockInTime}\n退勤：${data.clockOutTime}\n勤務：${data.workDuration}`;
-  } else {
+  } else if (data.clockInTime) {
     // 出勤通知
     message = `【出勤】\n${data.userName}\n${data.date} ${data.clockInTime}`;
+  } else {
+    Logger.log('LINE通知: 出退勤データではありません');
+    return;
   }
   
   const url = 'https://api.line.me/v2/bot/message/push';
