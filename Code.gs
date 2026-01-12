@@ -192,7 +192,33 @@ function testPost() {
   
   recordAttendance(testData);
   sendLineNotification(testData);
-  Logger.log('テスト完了');
+  Logger.log('プロパティ確認完了');
+}
+
+// 課題完了テスト用関数
+function testCompletion() {
+  const testData = {
+    type: 'completion',
+    completedAt: '2026/01/12 14:07',
+    userId: 'user01',
+    userName: 'テスト太郎',
+    appUrl: 'https://kensirou36.github.io/plate05/'
+  };
+  
+  try {
+    // スプレッドシートに記録
+    recordCompletion(testData);
+    Logger.log('✅ 課題完了記録: 成功');
+    
+    // LINE通知（月間上限に注意）
+    // sendCompletionNotification(testData);
+    // Logger.log('✅ LINE通知: 送信完了');
+    
+    Logger.log('テスト完了！スプレッドシートを確認してください。');
+    
+  } catch (error) {
+    Logger.log('❌ エラー: ' + error);
+  }
 }
 
 // 初期設定用関数（初回のみ実行）
